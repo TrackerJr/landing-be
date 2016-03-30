@@ -1,3 +1,6 @@
+server:
+    context-path: /landing-be
+    port: 8081
 ---
 hibernate:
     cache:
@@ -50,7 +53,7 @@ environments:
 grails:
     profile: rest-api
     codegen:
-        defaultPackage: landing.be
+        defaultPackage: th.co.ais.landing
     spring:
         transactionManagement:
             proxies: false
@@ -105,3 +108,11 @@ grails:
         defaultScope: singleton
     converters:
         encoding: UTF-8
+---
+users:
+    - username: admin
+      password: admin
+      authority: ROLE_ADMIN
+    - username: user
+      password: user
+      authority: ROLE_USER
