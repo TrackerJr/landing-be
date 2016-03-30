@@ -1,7 +1,8 @@
 .classpath
 .project
+.asscache
 /.gradle/
-/.setting/
+/.settings/
 /bin/
 /build/
 /gradle/
