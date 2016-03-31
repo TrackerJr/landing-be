@@ -49,7 +49,6 @@ environments:
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
 
 ---
----
 grails:
     profile: rest-api
     codegen:
@@ -106,6 +105,9 @@ grails:
             maxsize: 1000
     controllers:
         defaultScope: singleton
+        upload:
+            maxFileSize: 6164480
+            maxRequestSize: 6164480
     converters:
         encoding: UTF-8
 ---
