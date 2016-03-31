@@ -1,10 +1,12 @@
 package th.co.ais.landing
 
+import grails.rest.Resource
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
 @EqualsAndHashCode(includes='authority')
 @ToString(includes='authority', includeNames=true, includePackage=false)
+@Resource(uri='/api/role', formats=['json', 'xml'])
 class Role implements Serializable {
 
 	private static final long serialVersionUID = 1
