@@ -12,4 +12,12 @@ class Page {
 	
     static constraints = {
     }
+	
+	def getText() {
+		return this.text
+	}
+	
+	def setText(String text) {
+		this.text = text;
+	}
 }

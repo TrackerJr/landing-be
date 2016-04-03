@@ -45,4 +45,12 @@ class UserService {
 			UserRole.create(user, role, true)
 		}
 	}
+	
+	def getRoleCount() {
+		Role.count()
+	}
+	
+	def getUserCount() {
+		User.count()
+	}
 }

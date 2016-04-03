@@ -110,7 +110,7 @@ grails:
             maxRequestSize: 6164480
     converters:
         encoding: UTF-8
----
+--- # Spring user
 users:
     - username: admin
       password: admin
@@ -118,3 +118,10 @@ users:
     - username: user
       password: user
       authority: ROLE_USER
+--- # File server
+grails:
+    plugins:
+        fileserver:
+            paths:
+                prefix: template
+                template: /upload
