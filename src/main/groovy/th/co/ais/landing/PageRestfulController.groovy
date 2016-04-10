@@ -25,7 +25,16 @@ class PageRestfulController<T> extends RestfulController<T>{
 	def show() {		
 		def page = queryForResource(params.id)
 		
-		respond ([id: page.id, name: page.name, path: page.path, text: pageService.getText(page.path)])
+		respond ([
+			id: page.id, 
+			name: page.name,
+			links: page.links?.collect {
+				def o = Links.get(it.id)
+				[type: o.type.name(), link: o.link]
+			}, 
+			path: page.path, 
+			text: pageService.getText(page.path)
+		])
 	}
 	
 	/**
@@ -37,12 +46,17 @@ class PageRestfulController<T> extends RestfulController<T>{
 		if(handleReadOnly()) {
             return
         }
-		
 		Document doc = getDocument()		
         def instance = resource.newInstance()
 		instance.name = doc.title() ?: 'Unknown'
 		instance.path = "T${(new Date().getTime()).toString()}/index.html"
 		instance.text = request.JSON.text
+		
+		
+		instance.links = []
+		request.JSON.links?.each {
+			instance.links << new Links(type: it.type, link: it.link, page: instance)
+		}
 
         instance.validate()
         if (instance.hasErrors()) {
@@ -83,7 +97,10 @@ class PageRestfulController<T> extends RestfulController<T>{
 		instance.name = doc.title() ?: 'Unknown'
 		instance.text = request.JSON.text
 		
-		
+		instance.links?.clear()
+		request.JSON.links?.each {
+			instance.links << new Links(type: it.type, link: it.link, page: instance)
+		}
 		if (instance == null) {
 			transactionStatus.setRollbackOnly()
 			notFound()

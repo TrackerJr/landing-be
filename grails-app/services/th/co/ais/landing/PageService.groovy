@@ -7,6 +7,7 @@ import java.awt.Rectangle
 import java.awt.Robot
 import java.awt.Toolkit
 import java.awt.image.BufferedImage
+import java.nio.file.Paths
 
 import javax.imageio.ImageIO
 
@@ -15,6 +16,20 @@ import org.apache.commons.io.FileUtils
 @Transactional
 class PageService {
 	def grailsApplication
+	
+	File loadFile(String basePath, String filePath) {
+		
+		def pathToBase = Paths.get(basePath).normalize()
+		def pathToFile = Paths.get(basePath, filePath).normalize()
+
+		if (pathToFile.startsWith(pathToBase)) {
+			def file = pathToFile.toFile()
+			if (file.exists() && file.isFile()) {
+				return file
+			}
+		}
+		return null
+	}
 	
 	def String getText(String path) {
 		def folder = getTemplateFolder()
