@@ -1,5 +1,6 @@
 package th.co.ais.landing
 
+import grails.converters.JSON
 import grails.transaction.Transactional
 
 import java.awt.Desktop
@@ -7,7 +8,6 @@ import java.awt.Rectangle
 import java.awt.Robot
 import java.awt.Toolkit
 import java.awt.image.BufferedImage
-import java.nio.file.Paths
 
 import javax.imageio.ImageIO
 
@@ -16,21 +16,7 @@ import org.apache.commons.io.FileUtils
 @Transactional
 class PageService {
 	def grailsApplication
-	
-	File loadFile(String basePath, String filePath) {
 		
-		def pathToBase = Paths.get(basePath).normalize()
-		def pathToFile = Paths.get(basePath, filePath).normalize()
-
-		if (pathToFile.startsWith(pathToBase)) {
-			def file = pathToFile.toFile()
-			if (file.exists() && file.isFile()) {
-				return file
-			}
-		}
-		return null
-	}
-	
 	def String getText(String path) {
 		def folder = getTemplateFolder()
 		
@@ -47,12 +33,20 @@ class PageService {
 			dir.mkdir()
 		}
 		
+		println (instance.links as JSON).toString()
+		
+		instance.links.collect {
+			// Links
+			
+		}
+		
+//		new File(dir, 'links.json').withWriter('UTF-8') {
+//			it.writeLine (instance.links as JSON).toString()
+//		}
+		
 		new File(dir, paths[1]).withWriter('UTF-8') {
 			it.writeLine instance.text
 		}
-		/*try {
-			takeScreenShot(dir)
-		} catch(e){}*/
 	}
 	
 	def deleteFile(Page instance) {
@@ -71,12 +65,7 @@ class PageService {
 		if(!upload.exists()) {
 			upload.mkdir()
 		}
-		
-		def folder = new File(upload, grailsApplication.config.grails.plugins.fileserver.paths.prefix)
-		if(!folder.exists()) {
-			folder.mkdir()
-		} 
-		folder
+		upload
 	}
 	
 	private takeScreenShot(File dir) {
