@@ -7,10 +7,10 @@ import groovy.io.FileType
 class TemplateService {
 
     def getTemplate() {
-		
-		/*new File("/upload/default").eachFileRecurse(FileType.FILES) {
-			println it.name
-		}*/
-				
+		def list = []
+		new File('template')?.eachFileRecurse(FileType.FILES) {
+			list << [title: it.getName()-'.html', content: it.text]
+		}
+		return list
 	}
 }

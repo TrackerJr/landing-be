@@ -10,6 +10,6 @@ class TemplateController {
 	
     def index() {
 		def data = templateService.getTemplate()
-		render([] as JSON)
+		render(data as JSON)
 	}
 }
