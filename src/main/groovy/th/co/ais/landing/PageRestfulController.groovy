@@ -59,12 +59,12 @@ class PageRestfulController<T> extends RestfulController<T>{
 		}
 
         instance.validate()
-        if (instance.hasErrors()) {
+        if (instance.hasErrors() || !pageService.createFile(instance) ) {
             transactionStatus.setRollbackOnly()
             respond instance.errors, view:'create' // STATUS CODE 422
             return
         }
-		pageService.createFile(instance)
+			
         saveResource instance
 
         request.withFormat {
@@ -107,13 +107,12 @@ class PageRestfulController<T> extends RestfulController<T>{
 			return
 		}
 		
-		if (instance.hasErrors()) {
+		if (instance.hasErrors() || !pageService.createFile(instance)) {
 			transactionStatus.setRollbackOnly()
 			respond instance.errors, view:'edit' // STATUS CODE 422
 			return
 		}
 		
-		pageService.createFile(instance)
 		updateResource instance
 		request.withFormat {
 			form multipartForm {

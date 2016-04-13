@@ -1,17 +1,12 @@
 package th.co.ais.landing
 
-import grails.converters.JSON
 import grails.transaction.Transactional
 
-import java.awt.Desktop
-import java.awt.Rectangle
-import java.awt.Robot
-import java.awt.Toolkit
-import java.awt.image.BufferedImage
-
-import javax.imageio.ImageIO
-
 import org.apache.commons.io.FileUtils
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
+import org.jsoup.parser.Tag
 
 @Transactional
 class PageService {
@@ -23,29 +18,34 @@ class PageService {
 		return new File(folder, path)?.getText('UTF-8')
 	}
 	
-	def File createFile(Page instance) {
-		def folder = getTemplateFolder()
-		
-		def paths = instance.path.split("/")
-		
-		def dir = new File(folder, paths[0])
-		if(!dir.exists()) {
-			dir.mkdir()
-		}
-		
-		println (instance.links as JSON).toString()
-		
-		instance.links.collect {
-			// Links
+	def boolean createFile(Page instance) {
+		try {
+			def folder = getTemplateFolder()
 			
-		}
-		
-//		new File(dir, 'links.json').withWriter('UTF-8') {
-//			it.writeLine (instance.links as JSON).toString()
-//		}
-		
-		new File(dir, paths[1]).withWriter('UTF-8') {
-			it.writeLine instance.text
+			def paths = instance.path.split("/")
+			
+			def dir = new File(folder, paths[0])
+			if(!dir.exists()) {
+				dir.mkdir()
+			}
+	
+			Document doc = Jsoup.parse(instance.text)
+			def head = doc.head()
+			instance.links?.each {
+				head.append("""<link rel="stylesheet" type="text/css" href="${it.link}">""".toString())
+			}
+			
+			new File(dir, 'bin.html').withWriter('UTF-8') {
+				it.writeLine doc.outerHtml()
+			}
+			
+			new File(dir, paths[1]).withWriter('UTF-8') {
+				it.writeLine instance.text
+			}
+			return true
+		} catch (e) {
+			log.error "create file error: ", e
+			return false
 		}
 	}
 	
@@ -68,11 +68,11 @@ class PageService {
 		upload
 	}
 	
-	private takeScreenShot(File dir) {
+	/*private takeScreenShot(File dir) {
 		File index = new File(dir, 'index.html')
 		Desktop.getDesktop().browse(index.toURI());
 		BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
 		ImageIO.write(image, "png", new File("screenshot.png"));
-	}
+	}*/
     
 }
