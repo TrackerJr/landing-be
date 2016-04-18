@@ -140,13 +140,12 @@ class PageRestfulController<T> extends RestfulController<T>{
 		}
 
 		def instance = queryForResource(params.id)
-		if (instance == null) {
+		if (instance == null || !pageService.deleteFile(instance)) {
 			transactionStatus.setRollbackOnly()
 			notFound()
 			return
 		}
-
-		pageService.deleteFile(instance)
+		
 		instance.delete flush:true
 
 		request.withFormat {

@@ -51,17 +51,24 @@ class PageService {
 	
 	def deleteFile(Page instance) {
 		log.debug "Delete directory: ${instance.path}"
-		def folder = getTemplateFolder()
-		def template = instance.path.split("/")
-		def file = new File(folder, template[0])
+		try {
 		
-		if(file.exists()) {
-			FileUtils.deleteDirectory(file)
+			def folder = getPageFolder()
+			def template = instance.path.split("/")
+			def file = new File(folder, template[0])
+			
+			if(file.exists()) {
+				FileUtils.deleteDirectory(file)
+			}
+			return true
+		} catch(e) {
+			log.error "deleteFile error: ", e
+			return false
 		}
 	}
 	
-	private File getTemplateFolder() {
-		def upload = new File(grailsApplication.config.grails.plugins.fileserver.paths.template)
+	private File getPageFolder() {
+		def upload = new File(grailsApplication.config.grails.plugins.fileserver.paths.page)
 		if(!upload.exists()) {
 			upload.mkdir()
 		}

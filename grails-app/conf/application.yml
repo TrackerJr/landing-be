@@ -123,4 +123,5 @@ grails:
     plugins:
         fileserver:
             paths:
+                page: /upload/page
                 template: /upload/template
