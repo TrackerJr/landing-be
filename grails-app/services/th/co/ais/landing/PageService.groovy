@@ -13,14 +13,14 @@ class PageService {
 	def grailsApplication
 		
 	def String getText(String path) {
-		def folder = getTemplateFolder()
+		def folder = getPageFolder()
 		
 		return new File(folder, path)?.getText('UTF-8')
 	}
 	
 	def boolean createFile(Page instance) {
 		try {
-			def folder = getTemplateFolder()
+			def folder = getPageFolder()
 			
 			def paths = instance.path.split("/")
 			
